@@ -12,48 +12,60 @@ local default_can_dig = function(pos,player)
 	return meta:get_inventory():is_empty("main")
 end
 
+-- generate an inventory formspec.
+local generate_inventory_formspec = function(w, h)
+	local playerInvHeight = 4
+	local playerInvWidth = 8
+	local isMineclone = minetest.get_modpath("mcl_formspec")
+	-- cause inventories to be bigger that actaually defined size but close enough.
+	if isMineclone then
+		playerInvWidth = 9
+	end
+
+	local gridWidth = math.max(playerInvWidth, w)
+	local gridHeight = playerInvHeight + h + 1
+
+	local invPadding = (gridWidth - w) / 2
+	local playerInvPadding = (gridWidth - playerInvWidth) / 2
+
+	-- again, close enough
+	local theFormspec = "size[" .. gridWidth .. "," .. gridHeight .. "]" ..
+		"list[context;main;" .. invPadding .. ",0.25;" .. w .. "," .. h .. ";]" ..
+		"list[current_player;main;" .. playerInvPadding .. "," .. (0.75 + h) .. ";" .. playerInvWidth .. "," .. playerInvHeight .. ";]"
+
+
+	-- backgrounds
+	if mcl_formspec and mcl_formspec.get_itemslot_bg then
+		theFormspec = theFormspec ..
+			mcl_formspec.get_itemslot_bg(invPadding, 0.25, w, h) ..
+			mcl_formspec.get_itemslot_bg(playerInvPadding, (0.75 + h), playerInvWidth, playerInvHeight)
+	end
+
+	-- for moving things.
+	-- previously some didn't have those defined. not sure why.
+	theFormspec = theFormspec ..
+		"listring[context;main]" ..
+		"listring[current_player;main]"
+
+	return theFormspec
+end
+
 local default_inventory_formspecs = {
-	["4"]="size[8,6]"..
-	"list[context;main;2,0;4,1;]" ..
-	"list[current_player;main;0,2;8,4;]" ..
-	"listring[]",
+	["4"]=generate_inventory_formspec(4,1),
 
-	["6"]="size[8,6]"..
-	"list[context;main;1,0;6,1;]"..
-	"list[current_player;main;0,2;8,4;]" ..
-	"listring[]",
+	["6"]=generate_inventory_formspec(6,1),
 
-	["8"]="size[8,6]"..
-	"list[context;main;0,0;8,1;]"..
-	"list[current_player;main;0,2;8,4;]" ..
-	"listring[]",
+	["8"]=generate_inventory_formspec(8,1),
 
-	["12"]="size[8,7]"..
-	"list[context;main;1,0;6,2;]"..
-	"list[current_player;main;0,3;8,4;]" ..
-	"listring[]",
+	["12"]=generate_inventory_formspec(6,2),
 
-	["16"]="size[8,7]"..
-	"list[context;main;0,0;8,2;]"..
-	"list[current_player;main;0,3;8,4;]" ..
-	"listring[]",
+	["16"]=generate_inventory_formspec(8,2),
 
-	["24"]="size[8,8]"..
-	"list[context;main;0,0;8,3;]"..
-	"list[current_player;main;0,4;8,4;]" ..
-	"listring[]",
+	["24"]=generate_inventory_formspec(8,3),
 
-	["32"]="size[8,9]"..
-	"list[context;main;0,0.3;8,4;]"..
-	"list[current_player;main;0,4.85;8,1;]"..
-	"list[current_player;main;0,6.08;8,3;8]"..
-	"listring[context;main]" ..
-	"listring[current_player;main]",
+	["32"]=generate_inventory_formspec(8,4),
 
-	["50"]="size[10,10]"..
-	"list[context;main;0,0;10,5;]"..
-	"list[current_player;main;1,6;8,4;]" ..
-	"listring[]",
+	["50"]=generate_inventory_formspec(10,5),
 }
 
 local function get_formspec_by_size(size)
