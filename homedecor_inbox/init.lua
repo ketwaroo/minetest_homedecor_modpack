@@ -109,22 +109,39 @@ homedecor.register("inbox", {
 
 minetest.register_alias("inbox:empty", "homedecor:inbox")
 
+local playerInvWidth = 8
+local isMineclone = minetest.get_modpath("mcl_formspec")
+-- cause inventories to be bigger that actaually defined size but close enough.
+if isMineclone then
+	playerInvWidth = 9
+end
+
 function inbox.get_inbox_formspec(pos)
-	local spos = pos.x .. "," .. pos.y .. "," ..pos.z
+	local spos = pos.x .. "," .. pos.y .. "," .. pos.z
 	local formspec =
-		"size[8,9]"..
-		"list[nodemeta:".. spos .. ";main;0,0;8,4;]"..
-		"list[current_player;main;0,5;8,4;]" ..
+		"size[" .. playerInvWidth .. ",9]" ..
+		"list[nodemeta:" .. spos .. ";main;0,0;" .. playerInvWidth .. ",4;]" ..
+		"list[current_player;main;0,5;" .. playerInvWidth .. ",4;]" ..
 		"listring[]"
+	if isMineclone then
+		formspec = formspec ..
+			mcl_formspec.get_itemslot_bg(0, 0, playerInvWidth, 4) ..
+			mcl_formspec.get_itemslot_bg(0, 5, playerInvWidth, 4)
+	end
 	return formspec
 end
 
 function inbox.get_inbox_insert_formspec(pos)
-	local spos = pos.x .. "," .. pos.y .. "," ..pos.z
+	local spos = pos.x .. "," .. pos.y .. "," .. pos.z
 	local formspec =
-		"size[8,9]"..
-		"list[nodemeta:".. spos .. ";drop;3.5,2;1,1;]"..
-		"list[current_player;main;0,5;8,4;]"..
+		"size[" .. playerInvWidth .. ",9]" ..
+		"list[nodemeta:" .. spos .. ";drop;3.5,2;1,1;]" ..
+		"list[current_player;main;0,5;" .. playerInvWidth .. ",4;]" ..
 		"listring[]"
+	if isMineclone then
+		formspec = formspec ..
+			mcl_formspec.get_itemslot_bg(3.5, 2, 1, 1) ..
+			mcl_formspec.get_itemslot_bg(0, 5, playerInvWidth, 4)
+	end
 	return formspec
 end

@@ -30,6 +30,31 @@ homedecor.register("trash_can_green", {
 	}
 })
 
+
+local trash_can_formspec = function()
+	local playerInvWidth = 8
+	local isMineclone = minetest.get_modpath("mcl_formspec")
+	-- cause inventories to be bigger that actaually defined size but close enough.
+	if isMineclone then
+		playerInvWidth = 9
+	end
+	local theFormspec = "size[" .. playerInvWidth .. ",9]" ..
+		"button[2.5,3.8;3,1;empty;Empty Trash]" ..
+		"list[context;main;2.5,0.5;3,3;]" ..
+		"list[current_player;main;0,5;" .. playerInvWidth .. ",4;]" ..
+		"listring[]"
+
+	-- backgrounds
+	if isMineclone then
+		theFormspec = theFormspec ..
+			mcl_formspec.get_itemslot_bg(2.5, 0.5, 3, 3) ..
+			mcl_formspec.get_itemslot_bg(0, 5, playerInvWidth, 4)
+	end
+
+	return theFormspec
+end
+
+
 homedecor.register("trash_can_green_open", {
 	drawtype = "mesh",
 	mesh = "homedecor_trash_can_green_open.obj",
@@ -44,11 +69,7 @@ homedecor.register("trash_can_green_open", {
 	infotext=S("Trash Can"),
 	inventory= {
 		size = 9,
-		formspec = "size[8,9]"..
-		"button[2.5,3.8;3,1;empty;Empty Trash]"..
-		"list[context;main;2.5,0.5;3,3;]"..
-		"list[current_player;main;0,5;8,4;]" ..
-		"listring[]",
+		formspec = trash_can_formspec(),
 	},
 	on_receive_fields = function(pos, formname, fields, sender)
 		if fields.empty then

@@ -23,7 +23,7 @@ local generate_inventory_formspec = function(w, h)
 	end
 
 	local gridWidth = math.max(playerInvWidth, w)
-	local gridHeight = playerInvHeight + h + 1
+	local gridHeight = playerInvHeight + h + 0.75
 
 	local invPadding = (gridWidth - w) / 2
 	local playerInvPadding = (gridWidth - playerInvWidth) / 2
@@ -31,14 +31,14 @@ local generate_inventory_formspec = function(w, h)
 	-- again, close enough
 	local theFormspec = "size[" .. gridWidth .. "," .. gridHeight .. "]" ..
 		"list[context;main;" .. invPadding .. ",0.25;" .. w .. "," .. h .. ";]" ..
-		"list[current_player;main;" .. playerInvPadding .. "," .. (0.75 + h) .. ";" .. playerInvWidth .. "," .. playerInvHeight .. ";]"
+		"list[current_player;main;" .. playerInvPadding .. "," .. (0.5 + h) .. ";" .. playerInvWidth .. "," .. playerInvHeight .. ";]"
 
 
 	-- backgrounds
 	if mcl_formspec and mcl_formspec.get_itemslot_bg then
 		theFormspec = theFormspec ..
 			mcl_formspec.get_itemslot_bg(invPadding, 0.25, w, h) ..
-			mcl_formspec.get_itemslot_bg(playerInvPadding, (0.75 + h), playerInvWidth, playerInvHeight)
+			mcl_formspec.get_itemslot_bg(playerInvPadding, (0.5 + h), playerInvWidth, playerInvHeight)
 	end
 
 	-- for moving things.

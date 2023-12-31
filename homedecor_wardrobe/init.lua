@@ -122,6 +122,13 @@ local def = {
 
 		meta:get_inventory():set_size("main", 10)
 
+		local playerInvWidth = 8
+		local isMineclone = minetest.get_modpath("mcl_formspec")
+		-- cause inventories to be bigger that actaually defined size but close enough.
+		if isMineclone then
+			playerInvWidth = 9
+		end
+
 		-- textures made by the Minetest community (mostly Calinou and Jordach)
 		local clothes_strings = ""
 

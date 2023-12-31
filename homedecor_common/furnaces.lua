@@ -25,17 +25,36 @@ local function make_formspec(furnacedef, percent)
 	local w = furnacedef.output_width
 	local h = math.ceil(furnacedef.output_slots / furnacedef.output_width)
 
-	return "size["..math.max(8, 6 + w)..",9]"..
-		"image[2.75,1.5;1,1;"..fire.."]"..
-		"list[current_name;fuel;2.75,2.5;1,1;]"..
-		"list[current_name;src;2.75,0.5;1,1;]"..
-		"list[current_name;dst;4.75,0.96;"..w..","..h..";]"..
-		"list[current_player;main;0,4.25;8,1;]"..
-		"list[current_player;main;0,5.5;8,3;8]"..
-		"listring[current_name;dst]"..
-		"listring[current_player;main]"..
-		"listring[current_name;src]"..
+	local playerInvWidth = 8
+	local isMineclone = minetest.get_modpath("mcl_formspec")
+	-- cause inventories to be bigger that actaually defined size but close enough.
+	if isMineclone then
+		playerInvWidth = 9
+	end
+
+	local theFormspec = "size[" .. math.max(playerInvWidth, 6 + w) .. ",9]" ..
+		"image[2.75,1.5;1,1;" .. fire .. "]" ..
+		"list[current_name;fuel;2.75,2.5;1,1;]" ..
+		"list[current_name;src;2.75,0.5;1,1;]" ..
+		"list[current_name;dst;4.75,0.96;" .. w .. "," .. h .. ";]" ..
+		"list[current_player;main;0,4.25;" .. playerInvWidth .. ",1;]" ..
+		"list[current_player;main;0,5.5;" .. playerInvWidth .. ",3;" .. playerInvWidth .. "]" ..
+		"listring[current_name;dst]" ..
+		"listring[current_player;main]" ..
+		"listring[current_name;src]" ..
 		"listring[current_player;main]"
+
+	-- backgrounds
+	if mcl_formspec and mcl_formspec.get_itemslot_bg then
+		theFormspec = theFormspec ..
+			mcl_formspec.get_itemslot_bg(2.75, 2.5, 1, 1) ..
+			mcl_formspec.get_itemslot_bg(2.75, 0.5, 1, 1) ..
+			mcl_formspec.get_itemslot_bg(4.75, 0.96, w, h) ..
+			mcl_formspec.get_itemslot_bg(0, 4.25, playerInvWidth, 1) ..
+			mcl_formspec.get_itemslot_bg(0, 5.5, playerInvWidth, 3)
+	end
+
+	return theFormspec
 end
 
 --[[
